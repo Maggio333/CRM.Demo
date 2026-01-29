@@ -1,0 +1,132 @@
+# Docker Compose dla CRM Demo - Projekt Edukacyjny
+# 
+# Uwaga: To jest projekt edukacyjny/demo. Hasła są proste dla łatwego setupu.
+# W produkcji NIGDY nie używaj takich haseł!
+#
+# Szybki start:
+#   docker-compose up -d
+#
+# Connection String (działa od razu):
+#   Host=localhost;Port=5432;Database=CRM_DEMO;Username=postgres;Password=postgres
+#
+# Foreign Keys w bazie (wszystkie z SET NULL):
+#   - Contact.CustomerId -> Customer.Id (SET NULL)
+#   - Task.CustomerId -> Customer.Id (SET NULL)
+#   - Task.ContactId -> Contact.Id (SET NULL)
+#   - Note.CustomerId -> Customer.Id (SET NULL)
+#   - Note.ContactId -> Contact.Id (SET NULL)
+#   - Note.TaskId -> Task.Id (SET NULL)
+#   
+#   Gdy powiązany obiekt zostanie usunięty, referencja zostanie ustawiona na NULL
+#   (obiekty nie są usuwane - zachowujemy dane)
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: crm-demo-postgres
+    environment:
+      # Proste hasła dla łatwego setupu (projekt edukacyjny)
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: CRM_DEMO
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5433:5432"  # Mapowanie na port 5433 hosta, żeby uniknąć konfliktu z lokalną PostgreSQL
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - crm-demo-network
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: crm-demo-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    networks:
+      - crm-demo-network
+    restart: unless-stopped
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: crm-demo-kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      # Listeners - różne porty dla różnych protokołów
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_HOST://0.0.0.0:9093
+      # Advertised listeners - jak Kafka przedstawia się klientom
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+    ports:
+      - "9092:9092"  # PLAINTEXT - dla komunikacji wewnątrz Dockera
+      - "9093:9093"  # PLAINTEXT_HOST - dla komunikacji z hosta
+    networks:
+      - crm-demo-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-broker-api-versions --bootstrap-server localhost:9092"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: CRM.Demo.Api/Dockerfile
+    container_name: crm-demo-api
+    ports:
+      - "5000:80"
+      - "5001:443"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    networks:
+      - crm-demo-network
+    restart: unless-stopped
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=CRM_DEMO;Username=postgres;Password=postgres
+      # Uwaga: Port 5432 w connection string to port WEWNĄTRZ Dockera, nie hosta
+      - Kafka__BootstrapServers=kafka:9092
+    # Uwaga: W produkcji użyj appsettings.Production.json i zmiennych środowiskowych dla sekretów
+
+  frontend:
+    build:
+      context: ./CRM.Demo.Web
+      dockerfile: Dockerfile
+    container_name: crm-demo-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - api
+      - postgres
+      - kafka
+    networks:
+      - crm-demo-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  crm-demo-network:
+    driver: bridge

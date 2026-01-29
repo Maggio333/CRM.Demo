@@ -1,0 +1,82 @@
+name: Release
+
+on:
+  release:
+    types: [ created ]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., 1.0.0)'
+        required: true
+        type: string
+
+env:
+  DOTNET_VERSION: '8.0.x'
+  NODE_VERSION: '18.x'
+
+jobs:
+  build-and-publish:
+    name: Build and Publish
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build solution
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Run tests
+        run: dotnet test --no-build --configuration Release --verbosity minimal
+
+      - name: Publish API
+        run: |
+          dotnet publish CRM.Demo.Api/CRM.Demo.Api.csproj \
+            --configuration Release \
+            --output ./publish/api \
+            --no-build
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: CRM.Demo.Web/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: ./CRM.Demo.Web
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: ./CRM.Demo.Web
+        run: npm run build
+
+      - name: Create release archive
+        run: |
+          mkdir -p release
+          cp -r publish/api release/
+          cp -r CRM.Demo.Web/dist release/frontend
+          tar -czf release/crm-demo-${{ github.ref_name }}.tar.gz -C release api frontend
+
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-package
+          path: release/crm-demo-*.tar.gz
+          retention-days: 90
+
+      - name: Create GitHub Release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: release/crm-demo-*.tar.gz
+          draft: false
+          prerelease: false

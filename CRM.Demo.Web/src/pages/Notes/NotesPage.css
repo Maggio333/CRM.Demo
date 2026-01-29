@@ -1,0 +1,51 @@
+.notes-page {
+  padding: 2rem;
+  width: 100%;
+  max-width: 100%;
+}
+
+.notes-page h1 {
+  color: #213547;
+}
+
+.notes-table {
+  overflow-x: auto;
+}
+
+.notes-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.notes-table th,
+.notes-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  color: #213547;
+}
+
+.notes-table th {
+  background-color: #f5f5f5;
+  font-weight: 600;
+  color: #213547;
+}
+
+.notes-table tr:hover {
+  background-color: #f0f0f0;
+}
+
+.notes-table tr:hover td {
+  color: #213547;
+}
+
+.content-preview {
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modal-large {
+  max-width: 800px;
+}

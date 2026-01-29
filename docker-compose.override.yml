@@ -1,0 +1,10 @@
+# Override dla środowiska deweloperskiego
+# Ten plik jest ignorowany przez git (dodaj do .gitignore)
+# Możesz tutaj zmienić hasła, porty, etc. bez commitu do repo
+
+services:
+  postgres:
+    environment:
+      # Zmień hasło dla środowiska deweloperskiego
+      # POSTGRES_PASSWORD: twoje_haslo
+      # Odkomentuj powyższą linię i zmień hasło
