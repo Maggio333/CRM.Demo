@@ -84,7 +84,8 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
+      - name: Restore dependencies
+        run: dotnet restore
+
       - name: Run dotnet format check
-        run: |
-          dotnet tool install -g dotnet-format
-          dotnet format --verify-no-changes --verbosity diagnostic || exit 1
+        run: dotnet format --verify-no-changes --verbosity diagnostic
