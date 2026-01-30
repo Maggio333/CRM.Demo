@@ -78,5 +78,5 @@ jobs:
         with:
           files: 'test-results/**/*.trx'
           check_name: 'Unit Test Results'
-          comment_mode: 'create new'
+          comment_mode: 'always'
           report_individual_runs: true
