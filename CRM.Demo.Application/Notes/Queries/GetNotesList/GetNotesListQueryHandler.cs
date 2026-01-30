@@ -13,7 +13,7 @@ public class GetNotesListQueryHandler : IRequestHandler<GetNotesListQuery, List<
 {
     private readonly INoteRepository _repository;
     private readonly IMapper _mapper;
-    
+
     public GetNotesListQueryHandler(
         INoteRepository repository,
         IMapper mapper)
@@ -21,13 +21,13 @@ public class GetNotesListQueryHandler : IRequestHandler<GetNotesListQuery, List<
         _repository = repository;
         _mapper = mapper;
     }
-    
+
     public async Task<List<NoteDto>> Handle(
         GetNotesListQuery request,
         CancellationToken cancellationToken)
     {
         List<Domain.Notes.Entities.Note> notes;
-        
+
         if (request.CustomerId.HasValue)
         {
             notes = await _repository.GetByCustomerIdAsync(request.CustomerId.Value, cancellationToken);
@@ -48,13 +48,13 @@ public class GetNotesListQueryHandler : IRequestHandler<GetNotesListQuery, List<
         {
             notes = await _repository.GetAllAsync(cancellationToken);
         }
-        
+
         // Paginacja
         var paginatedNotes = notes
             .Skip((request.PageNumber - 1) * request.PageSize)
             .Take(request.PageSize)
             .ToList();
-        
+
         return _mapper.Map<List<NoteDto>>(paginatedNotes);
     }
 }

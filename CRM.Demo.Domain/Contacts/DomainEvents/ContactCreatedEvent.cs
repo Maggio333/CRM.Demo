@@ -10,7 +10,7 @@ public class ContactCreatedEvent : IDomainEvent
     public Guid? CustomerId { get; }
     public DateTime CreatedAt { get; }
     public DateTime OccurredOn { get; }
-    
+
     public ContactCreatedEvent(
         Guid contactId,
         string fullName,

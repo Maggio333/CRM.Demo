@@ -10,30 +10,30 @@ public class Task : Entity<Guid>
     // Podstawowe informacje
     public string Title { get; private set; }
     public string? Description { get; private set; }
-    
+
     // Value Objects
     public TaskType Type { get; private set; }
     public TaskStatus Status { get; private set; }
     public TaskPriority Priority { get; private set; }
-    
+
     // Terminy
     public DateTime? DueDate { get; private set; }
     public DateTime? StartDate { get; private set; }
     public DateTime? CompletedDate { get; private set; }
-    
+
     // Relacje (tylko ID - referencje do innych agregatów)
     public Guid? CustomerId { get; private set; }
     public Guid? ContactId { get; private set; }
     public Guid? AssignedToUserId { get; private set; }
-    
+
     // Metadata
     public DateTime CreatedAt { get; private set; }
     public Guid CreatedByUserId { get; private set; }
     public DateTime? UpdatedAt { get; private set; }
-    
+
     // Prywatny konstruktor
     private Task() { }
-    
+
     // Factory method
     public static Task Create(
         string title,
@@ -49,10 +49,10 @@ public class Task : Entity<Guid>
     {
         if (string.IsNullOrWhiteSpace(title))
             throw new DomainException("Task title cannot be empty");
-        
+
         if (dueDate.HasValue && startDate.HasValue && dueDate < startDate)
             throw new DomainException("Due date cannot be before start date");
-        
+
         var task = new Task
         {
             Id = Guid.NewGuid(),
@@ -69,7 +69,7 @@ public class Task : Entity<Guid>
             CreatedByUserId = createdByUserId,
             CreatedAt = DateTime.UtcNow
         };
-        
+
         task.AddDomainEvent(new TaskCreatedEvent(
             task.Id,
             task.Title,
@@ -79,23 +79,23 @@ public class Task : Entity<Guid>
             task.CustomerId,
             task.ContactId
         ));
-        
+
         return task;
     }
-    
+
     // Metody biznesowe
     public void AssignToUser(Guid userId)
     {
         if (Status == TaskStatus.Completed)
             throw new DomainException("Cannot assign completed task");
-        
+
         if (Status == TaskStatus.Cancelled)
             throw new DomainException("Cannot assign cancelled task");
-        
+
         var oldUserId = AssignedToUserId;
         AssignedToUserId = userId;
         UpdatedAt = DateTime.UtcNow;
-        
+
         AddDomainEvent(new TaskAssignedEvent(
             Id,
             oldUserId,
@@ -103,23 +103,23 @@ public class Task : Entity<Guid>
             DateTime.UtcNow
         ));
     }
-    
+
     public void ChangeStatus(TaskStatus newStatus)
     {
         if (Status == newStatus)
             return;
-        
+
         // Walidacja przejść statusów
         if (Status == TaskStatus.Completed && newStatus != TaskStatus.Completed)
             throw new DomainException("Cannot change status from Completed");
-        
+
         if (Status == TaskStatus.Cancelled && newStatus != TaskStatus.Cancelled)
             throw new DomainException("Cannot change status from Cancelled");
-        
+
         var oldStatus = Status;
         Status = newStatus;
         UpdatedAt = DateTime.UtcNow;
-        
+
         // Jeśli ukończone - ustaw datę ukończenia
         if (newStatus == TaskStatus.Completed)
         {
@@ -133,7 +133,7 @@ public class Task : Entity<Guid>
         {
             CompletedDate = null;
         }
-        
+
         AddDomainEvent(new TaskStatusChangedEvent(
             Id,
             oldStatus,
@@ -141,18 +141,18 @@ public class Task : Entity<Guid>
             DateTime.UtcNow
         ));
     }
-    
+
     public void UpdateDueDate(DateTime? newDueDate)
     {
         if (Status == TaskStatus.Completed)
             throw new DomainException("Cannot update due date for completed task");
-        
+
         if (newDueDate.HasValue && StartDate.HasValue && newDueDate < StartDate)
             throw new DomainException("Due date cannot be before start date");
-        
+
         DueDate = newDueDate;
         UpdatedAt = DateTime.UtcNow;
-        
+
         // Sprawdź czy zadanie jest przeterminowane
         if (newDueDate.HasValue && newDueDate < DateTime.UtcNow && Status != TaskStatus.Completed)
         {
@@ -163,30 +163,30 @@ public class Task : Entity<Guid>
             ));
         }
     }
-    
+
     public void LinkToCustomer(Guid customerId)
     {
         CustomerId = customerId;
         UpdatedAt = DateTime.UtcNow;
     }
-    
+
     public void LinkToContact(Guid contactId)
     {
         ContactId = contactId;
         UpdatedAt = DateTime.UtcNow;
     }
-    
+
     public void UpdateDescription(string? description)
     {
         Description = description;
         UpdatedAt = DateTime.UtcNow;
     }
-    
-    public bool IsOverdue => 
-        DueDate.HasValue && 
-        DueDate < DateTime.UtcNow && 
+
+    public bool IsOverdue =>
+        DueDate.HasValue &&
+        DueDate < DateTime.UtcNow &&
         Status != TaskStatus.Completed;
-    
+
     // Metoda do pełnej aktualizacji
     public void Update(
         string title,
@@ -201,33 +201,33 @@ public class Task : Entity<Guid>
     {
         if (Status == TaskStatus.Completed)
             throw new DomainException("Cannot update completed task");
-        
+
         if (Status == TaskStatus.Cancelled)
             throw new DomainException("Cannot update cancelled task");
-        
+
         if (string.IsNullOrWhiteSpace(title))
             throw new DomainException("Task title cannot be empty");
-        
+
         if (dueDate.HasValue && startDate.HasValue && dueDate < startDate)
             throw new DomainException("Due date cannot be before start date");
-        
+
         Title = title;
         Type = type;
         Priority = priority;
         Description = description;
         StartDate = startDate;
         DueDate = dueDate;
-        
+
         if (CustomerId != customerId)
         {
             CustomerId = customerId;
         }
-        
+
         if (ContactId != contactId)
         {
             ContactId = contactId;
         }
-        
+
         if (AssignedToUserId != assignedToUserId)
         {
             var oldUserId = AssignedToUserId;
@@ -242,9 +242,9 @@ public class Task : Entity<Guid>
                 ));
             }
         }
-        
+
         UpdatedAt = DateTime.UtcNow;
-        
+
         // Sprawdź czy zadanie jest przeterminowane
         if (dueDate.HasValue && dueDate < DateTime.UtcNow && Status != TaskStatus.Completed)
         {

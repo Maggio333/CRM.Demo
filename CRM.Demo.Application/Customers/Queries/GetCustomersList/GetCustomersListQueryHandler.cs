@@ -13,7 +13,7 @@ public class GetCustomersListQueryHandler : IRequestHandler<GetCustomersListQuer
 {
     private readonly ICustomerRepository _repository;
     private readonly IMapper _mapper;
-    
+
     public GetCustomersListQueryHandler(
         ICustomerRepository repository,
         IMapper mapper)
@@ -21,13 +21,13 @@ public class GetCustomersListQueryHandler : IRequestHandler<GetCustomersListQuer
         _repository = repository;
         _mapper = mapper;
     }
-    
+
     public async Task<List<CustomerDto>> Handle(
         GetCustomersListQuery request,
         CancellationToken cancellationToken)
     {
         List<Domain.Customers.Entities.Customer> customers;
-        
+
         if (!string.IsNullOrWhiteSpace(request.SearchTerm))
         {
             customers = await _repository.SearchByCompanyNameAsync(
@@ -39,13 +39,13 @@ public class GetCustomersListQueryHandler : IRequestHandler<GetCustomersListQuer
         {
             customers = await _repository.GetAllAsync(cancellationToken);
         }
-        
+
         // Paginacja
         var paginatedCustomers = customers
             .Skip((request.PageNumber - 1) * request.PageSize)
             .Take(request.PageSize)
             .ToList();
-        
+
         return _mapper.Map<List<CustomerDto>>(paginatedCustomers);
     }
 }

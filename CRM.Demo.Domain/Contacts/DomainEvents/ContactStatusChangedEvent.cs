@@ -10,7 +10,7 @@ public class ContactStatusChangedEvent : IDomainEvent
     public string NewStatus { get; }
     public DateTime ChangedAt { get; }
     public DateTime OccurredOn { get; }
-    
+
     public ContactStatusChangedEvent(
         Guid contactId,
         ContactStatus oldStatus,

@@ -85,7 +85,7 @@ public class ContactConfiguration : IEntityTypeConfiguration<Contact>
         // Relacje
         builder.Property(c => c.CustomerId)
             .IsRequired(false);
-        
+
         // Foreign key constraint z SET NULL - gdy Customer zostanie usunięty, CustomerId w Contacts zostanie ustawione na NULL
         builder.HasOne<Customer>()
             .WithMany()

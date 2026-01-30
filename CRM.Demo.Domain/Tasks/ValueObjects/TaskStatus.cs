@@ -9,21 +9,21 @@ public class TaskStatus : ValueObject
     public static readonly TaskStatus Completed = new("Completed", "Task completed");
     public static readonly TaskStatus Cancelled = new("Cancelled", "Task cancelled");
     public static readonly TaskStatus OnHold = new("OnHold", "Task on hold");
-    
+
     public string Value { get; }
     public string Description { get; }
-    
+
     private TaskStatus(string value, string description)
     {
         Value = value;
         Description = description;
     }
-    
+
     protected override IEnumerable<object> GetEqualityComponents()
     {
         yield return Value;
     }
-    
+
     public static TaskStatus FromString(string value)
     {
         return value switch
@@ -36,6 +36,6 @@ public class TaskStatus : ValueObject
             _ => throw new DomainException($"Invalid task status: {value}")
         };
     }
-    
+
     public override string ToString() => Value;
 }

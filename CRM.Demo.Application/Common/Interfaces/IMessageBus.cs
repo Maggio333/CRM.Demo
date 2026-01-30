@@ -12,7 +12,7 @@ public interface IMessageBus
     /// Publikuje Domain Event.
     /// </summary>
     Task PublishAsync(IDomainEvent domainEvent, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Publikuje wiele Domain Events.
     /// </summary>

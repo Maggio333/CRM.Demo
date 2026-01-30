@@ -11,7 +11,7 @@ public class DeleteNoteCommand : IRequest<Result<Unit, string>>
 {
     public Guid NoteId { get; set; }
     public Guid DeletedByUserId { get; set; }
-    
+
     public DeleteNoteCommand(Guid noteId, Guid deletedByUserId)
     {
         NoteId = noteId;

@@ -11,7 +11,7 @@ public class NoteCreatedEvent : IDomainEvent
     public Guid? TaskId { get; }
     public DateTime CreatedAt { get; }
     public DateTime OccurredOn { get; }
-    
+
     public NoteCreatedEvent(
         Guid noteId,
         string noteType,

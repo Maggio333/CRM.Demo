@@ -8,7 +8,7 @@ public class NoteAttachmentAddedEvent : IDomainEvent
     public string FileName { get; }
     public DateTime AddedAt { get; }
     public DateTime OccurredOn { get; }
-    
+
     public NoteAttachmentAddedEvent(
         Guid noteId,
         string fileName,

@@ -13,12 +13,12 @@ public interface IContactRepository : IRepository<Contact, Guid>
     /// Wyszukuje Contact po emailu.
     /// </summary>
     Task<Contact?> FindByEmailAsync(string email, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Wyszukuje wszystkie Contacty dla danego Customer.
     /// </summary>
     Task<List<Contact>> GetByCustomerIdAsync(Guid customerId, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Wyszukuje Contacty po imieniu i nazwisku (częściowe dopasowanie).
     /// </summary>

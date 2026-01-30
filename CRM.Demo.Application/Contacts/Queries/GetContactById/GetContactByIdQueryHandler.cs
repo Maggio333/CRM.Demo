@@ -14,7 +14,7 @@ public class GetContactByIdQueryHandler : IRequestHandler<GetContactByIdQuery, R
 {
     private readonly IContactRepository _repository;
     private readonly IMapper _mapper;
-    
+
     public GetContactByIdQueryHandler(
         IContactRepository repository,
         IMapper mapper)
@@ -22,20 +22,20 @@ public class GetContactByIdQueryHandler : IRequestHandler<GetContactByIdQuery, R
         _repository = repository;
         _mapper = mapper;
     }
-    
+
     public async Task<Result<ContactDto, string>> Handle(
         GetContactByIdQuery request,
         CancellationToken cancellationToken)
     {
         var contact = await _repository.GetByIdAsync(request.ContactId, cancellationToken);
-        
+
         if (contact == null)
         {
             return Result<ContactDto, string>.Failure(
                 $"Contact with ID {request.ContactId} not found"
             );
         }
-        
+
         var contactDto = _mapper.Map<ContactDto>(contact);
         return Result<ContactDto, string>.Success(contactDto);
     }

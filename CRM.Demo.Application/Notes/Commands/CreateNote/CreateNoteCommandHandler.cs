@@ -15,7 +15,7 @@ public class CreateNoteCommandHandler : IRequestHandler<CreateNoteCommand, Resul
 {
     private readonly INoteRepository _repository;
     private readonly IUnitOfWork _unitOfWork;
-    
+
     public CreateNoteCommandHandler(
         INoteRepository repository,
         IUnitOfWork unitOfWork)
@@ -23,7 +23,7 @@ public class CreateNoteCommandHandler : IRequestHandler<CreateNoteCommand, Resul
         _repository = repository;
         _unitOfWork = unitOfWork;
     }
-    
+
     public async Task<Result<Guid, string>> Handle(
         CreateNoteCommand request,
         CancellationToken cancellationToken)
@@ -32,13 +32,13 @@ public class CreateNoteCommandHandler : IRequestHandler<CreateNoteCommand, Resul
         {
             // Utwórz Value Objects
             var noteType = NoteType.FromString(request.Dto.Type);
-            
+
             NoteCategory? category = null;
             if (!string.IsNullOrEmpty(request.Dto.Category))
             {
                 category = NoteCategory.FromString(request.Dto.Category);
             }
-            
+
             // Utwórz Note (Entity)
             var note = Note.Create(
                 request.Dto.Content,
@@ -50,13 +50,13 @@ public class CreateNoteCommandHandler : IRequestHandler<CreateNoteCommand, Resul
                 request.Dto.ContactId,
                 request.Dto.TaskId
             );
-            
+
             // Zapisz przez Repository
             await _repository.AddAsync(note, cancellationToken);
-            
+
             // UnitOfWork zapisuje do bazy i publikuje Domain Events
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            
+
             return Result<Guid, string>.Success(note.Id);
         }
         catch (DomainException ex)

@@ -8,7 +8,7 @@ public class ContactUpdatedEvent : IDomainEvent
     public string ChangeDescription { get; }
     public DateTime UpdatedAt { get; }
     public DateTime OccurredOn { get; }
-    
+
     public ContactUpdatedEvent(
         Guid contactId,
         string changeDescription,

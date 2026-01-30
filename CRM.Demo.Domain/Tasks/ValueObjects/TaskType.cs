@@ -10,21 +10,21 @@ public class TaskType : ValueObject
     public static readonly TaskType FollowUp = new("FollowUp", "Follow-up action");
     public static readonly TaskType Document = new("Document", "Document preparation or review");
     public static readonly TaskType Other = new("Other", "Other type of task");
-    
+
     public string Value { get; }
     public string Description { get; }
-    
+
     private TaskType(string value, string description)
     {
         Value = value;
         Description = description;
     }
-    
+
     protected override IEnumerable<object> GetEqualityComponents()
     {
         yield return Value;
     }
-    
+
     public static TaskType FromString(string value)
     {
         return value switch
@@ -38,6 +38,6 @@ public class TaskType : ValueObject
             _ => throw new DomainException($"Invalid task type: {value}")
         };
     }
-    
+
     public override string ToString() => Value;
 }

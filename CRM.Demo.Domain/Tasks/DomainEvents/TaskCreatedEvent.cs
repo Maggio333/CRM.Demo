@@ -12,7 +12,7 @@ public class TaskCreatedEvent : IDomainEvent
     public Guid? ContactId { get; }
     public DateTime CreatedAt { get; }
     public DateTime OccurredOn { get; }
-    
+
     public TaskCreatedEvent(
         Guid taskId,
         string title,

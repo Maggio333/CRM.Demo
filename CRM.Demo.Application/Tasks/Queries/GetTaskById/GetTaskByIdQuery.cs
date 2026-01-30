@@ -10,7 +10,7 @@ namespace CRM.Demo.Application.Tasks.Queries.GetTaskById;
 public class GetTaskByIdQuery : IRequest<Result<TaskDto, string>>
 {
     public Guid TaskId { get; set; }
-    
+
     public GetTaskByIdQuery(Guid taskId)
     {
         TaskId = taskId;

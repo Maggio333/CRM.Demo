@@ -44,7 +44,7 @@ public class CustomerTests
         // Assert
         customer.DomainEvents.Should().HaveCount(1);
         customer.DomainEvents.First().Should().BeOfType<CustomerCreatedEvent>();
-        
+
         var domainEvent = customer.DomainEvents.First() as CustomerCreatedEvent;
         domainEvent.Should().NotBeNull();
         domainEvent!.CustomerId.Should().Be(customer.Id);
@@ -133,7 +133,7 @@ public class CustomerTests
             Email.Create("old@example.com")
         );
         customer.ClearDomainEvents(); // Clear creation event
-        
+
         var newEmail = Email.Create("new@example.com");
 
         // Act
@@ -215,7 +215,7 @@ public class CustomerTests
         // Assert
         customer.DomainEvents.Should().HaveCount(1);
         customer.DomainEvents.First().Should().BeOfType<CustomerStatusChangedEvent>();
-        
+
         var domainEvent = customer.DomainEvents.First() as CustomerStatusChangedEvent;
         domainEvent.Should().NotBeNull();
         domainEvent!.CustomerId.Should().Be(customer.Id);

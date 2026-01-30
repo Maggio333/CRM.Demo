@@ -8,7 +8,7 @@ public class TaskOverdueEvent : IDomainEvent
     public DateTime DueDate { get; }
     public Guid? AssignedToUserId { get; }
     public DateTime OccurredOn { get; }
-    
+
     public TaskOverdueEvent(
         Guid taskId,
         DateTime dueDate,

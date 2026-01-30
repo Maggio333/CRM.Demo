@@ -41,8 +41,8 @@ public class TaskRepository : Repository<DomainTask, Guid>, ITaskRepository
     {
         var now = DateTime.UtcNow;
         return await _dbSet
-            .Where(t => t.DueDate.HasValue && 
-                       t.DueDate.Value < now && 
+            .Where(t => t.DueDate.HasValue &&
+                       t.DueDate.Value < now &&
                        t.Status.Value != "Completed")
             .ToListAsync(cancellationToken);
     }

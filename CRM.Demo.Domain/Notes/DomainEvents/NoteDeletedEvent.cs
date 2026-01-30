@@ -8,7 +8,7 @@ public class NoteDeletedEvent : IDomainEvent
     public Guid DeletedByUserId { get; }
     public DateTime DeletedAt { get; }
     public DateTime OccurredOn { get; }
-    
+
     public NoteDeletedEvent(
         Guid noteId,
         Guid deletedByUserId,

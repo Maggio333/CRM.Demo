@@ -11,7 +11,7 @@ public class TaskStatusChangedEvent : IDomainEvent
     public string NewStatus { get; }
     public DateTime ChangedAt { get; }
     public DateTime OccurredOn { get; }
-    
+
     public TaskStatusChangedEvent(
         Guid taskId,
         TaskStatusValueObject oldStatus,

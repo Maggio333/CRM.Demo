@@ -10,7 +10,7 @@ namespace CRM.Demo.Application.Tasks.Commands.DeleteTask;
 public class DeleteTaskCommand : IRequest<Result<Unit, string>>
 {
     public Guid TaskId { get; set; }
-    
+
     public DeleteTaskCommand(Guid taskId)
     {
         TaskId = taskId;

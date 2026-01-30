@@ -10,7 +10,7 @@ namespace CRM.Demo.Application.Contacts.Commands.DeleteContact;
 public class DeleteContactCommand : IRequest<Result<Unit, string>>
 {
     public Guid ContactId { get; set; }
-    
+
     public DeleteContactCommand(Guid contactId)
     {
         ContactId = contactId;

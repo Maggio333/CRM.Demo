@@ -13,12 +13,12 @@ public interface ICustomerRepository : IRepository<Customer, Guid>
     /// Wyszukuje Customer po emailu.
     /// </summary>
     Task<Customer?> FindByEmailAsync(string email, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Wyszukuje Customer po TaxId (NIP).
     /// </summary>
     Task<Customer?> FindByTaxIdAsync(string taxId, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Wyszukuje Customer po nazwie firmy (częściowe dopasowanie).
     /// </summary>

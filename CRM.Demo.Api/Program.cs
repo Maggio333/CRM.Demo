@@ -31,7 +31,7 @@ builder.Services.AddSwaggerGen(c =>
             Email = "demo@crm.com"
         }
     });
-    
+
     // Włącz XML comments dla lepszej dokumentacji
     var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -70,7 +70,7 @@ if (app.Environment.IsDevelopment() || Environment.GetEnvironmentVariable("DOTNE
         try
         {
             var context = services.GetRequiredService<ApplicationDbContext>();
-            
+
             // Czekaj na bazę danych (retry logic)
             var maxRetries = 10;
             var delay = TimeSpan.FromSeconds(2);

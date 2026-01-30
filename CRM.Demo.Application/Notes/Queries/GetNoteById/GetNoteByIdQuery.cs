@@ -10,7 +10,7 @@ namespace CRM.Demo.Application.Notes.Queries.GetNoteById;
 public class GetNoteByIdQuery : IRequest<Result<NoteDto, string>>
 {
     public Guid NoteId { get; set; }
-    
+
     public GetNoteByIdQuery(Guid noteId)
     {
         NoteId = noteId;

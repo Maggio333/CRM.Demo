@@ -10,7 +10,7 @@ namespace CRM.Demo.Application.Customers.Queries.GetCustomerById;
 public class GetCustomerByIdQuery : IRequest<Result<CustomerDto, string>>
 {
     public Guid CustomerId { get; set; }
-    
+
     public GetCustomerByIdQuery(Guid customerId)
     {
         CustomerId = customerId;

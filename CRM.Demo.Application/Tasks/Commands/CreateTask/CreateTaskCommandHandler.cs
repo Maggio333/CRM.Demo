@@ -15,7 +15,7 @@ public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, Resul
 {
     private readonly ITaskRepository _repository;
     private readonly IUnitOfWork _unitOfWork;
-    
+
     public CreateTaskCommandHandler(
         ITaskRepository repository,
         IUnitOfWork unitOfWork)
@@ -23,7 +23,7 @@ public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, Resul
         _repository = repository;
         _unitOfWork = unitOfWork;
     }
-    
+
     public async Task<Result<Guid, string>> Handle(
         CreateTaskCommand request,
         CancellationToken cancellationToken)
@@ -33,7 +33,7 @@ public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, Resul
             // Utwórz Value Objects
             var taskType = TaskType.FromString(request.Dto.Type);
             var priority = TaskPriority.FromString(request.Dto.Priority);
-            
+
             // Utwórz Task (Entity)
             var task = Domain.Tasks.Entities.Task.Create(
                 request.Dto.Title,
@@ -47,13 +47,13 @@ public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, Resul
                 request.Dto.ContactId,
                 request.Dto.AssignedToUserId
             );
-            
+
             // Zapisz przez Repository
             await _repository.AddAsync(task, cancellationToken);
-            
+
             // UnitOfWork zapisuje do bazy i publikuje Domain Events
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            
+
             return Result<Guid, string>.Success(task.Id);
         }
         catch (DomainException ex)

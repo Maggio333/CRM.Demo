@@ -7,7 +7,7 @@ public class NoteUpdatedEvent : IDomainEvent
     public Guid NoteId { get; }
     public DateTime UpdatedAt { get; }
     public DateTime OccurredOn { get; }
-    
+
     public NoteUpdatedEvent(
         Guid noteId,
         DateTime updatedAt)

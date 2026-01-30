@@ -9,7 +9,7 @@ public class CustomerCreatedEvent : IDomainEvent
     public string Email { get; }
     public DateTime CreatedAt { get; }
     public DateTime OccurredOn { get; }
-    
+
     public CustomerCreatedEvent(
         Guid customerId,
         string companyName,

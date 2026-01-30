@@ -65,20 +65,20 @@ public class TaskConfiguration : IEntityTypeConfiguration<DomainTask>
         // Relacje
         builder.Property(t => t.CustomerId)
             .IsRequired(false);
-        
+
         builder.Property(t => t.ContactId)
             .IsRequired(false);
 
         builder.Property(t => t.AssignedToUserId)
             .IsRequired(false);
-        
+
         // Foreign key constraints z SET NULL
         // Gdy Customer zostanie usunięty, Task.CustomerId zostanie ustawione na NULL
         builder.HasOne<Customer>()
             .WithMany()
             .HasForeignKey(t => t.CustomerId)
             .OnDelete(DeleteBehavior.SetNull);
-        
+
         // Gdy Contact zostanie usunięty, Task.ContactId zostanie ustawione na NULL
         builder.HasOne<Contact>()
             .WithMany()

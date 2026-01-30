@@ -13,7 +13,7 @@ public class GetContactsListQueryHandler : IRequestHandler<GetContactsListQuery,
 {
     private readonly IContactRepository _repository;
     private readonly IMapper _mapper;
-    
+
     public GetContactsListQueryHandler(
         IContactRepository repository,
         IMapper mapper)
@@ -21,13 +21,13 @@ public class GetContactsListQueryHandler : IRequestHandler<GetContactsListQuery,
         _repository = repository;
         _mapper = mapper;
     }
-    
+
     public async Task<List<ContactDto>> Handle(
         GetContactsListQuery request,
         CancellationToken cancellationToken)
     {
         List<Domain.Contacts.Entities.Contact> contacts;
-        
+
         if (request.CustomerId.HasValue)
         {
             contacts = await _repository.GetByCustomerIdAsync(request.CustomerId.Value, cancellationToken);
@@ -40,13 +40,13 @@ public class GetContactsListQueryHandler : IRequestHandler<GetContactsListQuery,
         {
             contacts = await _repository.GetAllAsync(cancellationToken);
         }
-        
+
         // Paginacja
         var paginatedContacts = contacts
             .Skip((request.PageNumber - 1) * request.PageSize)
             .Take(request.PageSize)
             .ToList();
-        
+
         return _mapper.Map<List<ContactDto>>(paginatedContacts);
     }
 }

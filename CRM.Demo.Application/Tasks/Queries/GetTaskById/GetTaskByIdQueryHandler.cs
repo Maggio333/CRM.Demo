@@ -14,7 +14,7 @@ public class GetTaskByIdQueryHandler : IRequestHandler<GetTaskByIdQuery, Result<
 {
     private readonly ITaskRepository _repository;
     private readonly IMapper _mapper;
-    
+
     public GetTaskByIdQueryHandler(
         ITaskRepository repository,
         IMapper mapper)
@@ -22,20 +22,20 @@ public class GetTaskByIdQueryHandler : IRequestHandler<GetTaskByIdQuery, Result<
         _repository = repository;
         _mapper = mapper;
     }
-    
+
     public async Task<Result<TaskDto, string>> Handle(
         GetTaskByIdQuery request,
         CancellationToken cancellationToken)
     {
         var task = await _repository.GetByIdAsync(request.TaskId, cancellationToken);
-        
+
         if (task == null)
         {
             return Result<TaskDto, string>.Failure(
                 $"Task with ID {request.TaskId} not found"
             );
         }
-        
+
         var taskDto = _mapper.Map<TaskDto>(task);
         return Result<TaskDto, string>.Success(taskDto);
     }

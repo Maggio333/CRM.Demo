@@ -8,7 +8,7 @@ public class CustomerUpdatedEvent : IDomainEvent
     public string ChangeDescription { get; }
     public DateTime UpdatedAt { get; }
     public DateTime OccurredOn { get; }
-    
+
     public CustomerUpdatedEvent(
         Guid customerId,
         string changeDescription,

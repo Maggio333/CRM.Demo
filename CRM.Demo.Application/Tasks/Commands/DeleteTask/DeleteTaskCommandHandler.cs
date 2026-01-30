@@ -14,7 +14,7 @@ public class DeleteTaskCommandHandler : IRequestHandler<DeleteTaskCommand, Resul
 {
     private readonly ITaskRepository _repository;
     private readonly IUnitOfWork _unitOfWork;
-    
+
     public DeleteTaskCommandHandler(
         ITaskRepository repository,
         IUnitOfWork unitOfWork)
@@ -22,7 +22,7 @@ public class DeleteTaskCommandHandler : IRequestHandler<DeleteTaskCommand, Resul
         _repository = repository;
         _unitOfWork = unitOfWork;
     }
-    
+
     public async Task<Result<Unit, string>> Handle(
         DeleteTaskCommand request,
         CancellationToken cancellationToken)
@@ -30,17 +30,17 @@ public class DeleteTaskCommandHandler : IRequestHandler<DeleteTaskCommand, Resul
         try
         {
             var task = await _repository.GetByIdAsync(request.TaskId, cancellationToken);
-            
+
             if (task == null)
             {
                 return Result<Unit, string>.Failure(
                     $"Task with ID {request.TaskId} not found"
                 );
             }
-            
+
             await _repository.DeleteAsync(task, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            
+
             return Result<Unit, string>.Success(Unit.Value);
         }
         catch (Exception ex)

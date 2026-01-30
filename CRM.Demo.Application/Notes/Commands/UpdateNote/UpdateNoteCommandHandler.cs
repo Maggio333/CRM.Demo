@@ -15,7 +15,7 @@ public class UpdateNoteCommandHandler : IRequestHandler<UpdateNoteCommand, Resul
 {
     private readonly INoteRepository _repository;
     private readonly IUnitOfWork _unitOfWork;
-    
+
     public UpdateNoteCommandHandler(
         INoteRepository repository,
         IUnitOfWork unitOfWork)
@@ -23,7 +23,7 @@ public class UpdateNoteCommandHandler : IRequestHandler<UpdateNoteCommand, Resul
         _repository = repository;
         _unitOfWork = unitOfWork;
     }
-    
+
     public async Task<Result<Unit, string>> Handle(
         UpdateNoteCommand request,
         CancellationToken cancellationToken)
@@ -37,20 +37,20 @@ public class UpdateNoteCommandHandler : IRequestHandler<UpdateNoteCommand, Resul
                     $"Note with ID {request.Id} not found"
                 );
             }
-            
+
             // Utwórz Value Objects
             var noteType = NoteType.FromString(request.Dto.Type);
             if (noteType == null)
             {
                 return Result<Unit, string>.Failure("Invalid note type");
             }
-            
+
             NoteCategory? category = null;
             if (!string.IsNullOrEmpty(request.Dto.Category))
             {
                 category = NoteCategory.FromString(request.Dto.Category);
             }
-            
+
             // Aktualizuj Note - użyj nowej metody Update
             // Używamy placeholder dla updatedByUserId - w produkcji z sesji użytkownika
             note.Update(
@@ -63,9 +63,9 @@ public class UpdateNoteCommandHandler : IRequestHandler<UpdateNoteCommand, Resul
                 request.Dto.TaskId,
                 Guid.Empty // Placeholder - w produkcji z sesji
             );
-            
+
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            
+
             return Result<Unit, string>.Success(Unit.Value);
         }
         catch (DomainException ex)

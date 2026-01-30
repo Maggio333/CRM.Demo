@@ -9,7 +9,7 @@ public class ContactAssignedToCustomerEvent : IDomainEvent
     public Guid? NewCustomerId { get; }
     public DateTime AssignedAt { get; }
     public DateTime OccurredOn { get; }
-    
+
     public ContactAssignedToCustomerEvent(
         Guid contactId,
         Guid? oldCustomerId,

@@ -52,20 +52,20 @@ public class NoteConfiguration : IEntityTypeConfiguration<Note>
 
         builder.Property(n => n.TaskId)
             .IsRequired(false);
-        
+
         // Foreign key constraints z SET NULL
         // Gdy Customer zostanie usunięty, Note.CustomerId zostanie ustawione na NULL
         builder.HasOne<Customer>()
             .WithMany()
             .HasForeignKey(n => n.CustomerId)
             .OnDelete(DeleteBehavior.SetNull);
-        
+
         // Gdy Contact zostanie usunięty, Note.ContactId zostanie ustawione na NULL
         builder.HasOne<Contact>()
             .WithMany()
             .HasForeignKey(n => n.ContactId)
             .OnDelete(DeleteBehavior.SetNull);
-        
+
         // Gdy Task zostanie usunięty, Note.TaskId zostanie ustawione na NULL
         builder.HasOne<DomainTask>()
             .WithMany()

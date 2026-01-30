@@ -7,7 +7,7 @@ public class TaskCompletedEvent : IDomainEvent
     public Guid TaskId { get; }
     public DateTime CompletedDate { get; }
     public DateTime OccurredOn { get; }
-    
+
     public TaskCompletedEvent(
         Guid taskId,
         DateTime completedDate)

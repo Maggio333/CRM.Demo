@@ -15,7 +15,7 @@ public class UpdateTaskCommandHandler : IRequestHandler<UpdateTaskCommand, Resul
 {
     private readonly ITaskRepository _repository;
     private readonly IUnitOfWork _unitOfWork;
-    
+
     public UpdateTaskCommandHandler(
         ITaskRepository repository,
         IUnitOfWork unitOfWork)
@@ -23,7 +23,7 @@ public class UpdateTaskCommandHandler : IRequestHandler<UpdateTaskCommand, Resul
         _repository = repository;
         _unitOfWork = unitOfWork;
     }
-    
+
     public async Task<Result<Unit, string>> Handle(
         UpdateTaskCommand request,
         CancellationToken cancellationToken)
@@ -37,20 +37,20 @@ public class UpdateTaskCommandHandler : IRequestHandler<UpdateTaskCommand, Resul
                     $"Task with ID {request.Id} not found"
                 );
             }
-            
+
             // Utwórz Value Objects
             var taskType = TaskType.FromString(request.Dto.Type);
             if (taskType == null)
             {
                 return Result<Unit, string>.Failure("Invalid task type");
             }
-            
+
             var priority = TaskPriority.FromString(request.Dto.Priority);
             if (priority == null)
             {
                 return Result<Unit, string>.Failure("Invalid task priority");
             }
-            
+
             // Aktualizuj Task - użyj nowej metody Update
             task.Update(
                 request.Dto.Title,
@@ -63,9 +63,9 @@ public class UpdateTaskCommandHandler : IRequestHandler<UpdateTaskCommand, Resul
                 request.Dto.ContactId,
                 request.Dto.AssignedToUserId
             );
-            
+
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            
+
             return Result<Unit, string>.Success(Unit.Value);
         }
         catch (DomainException ex)

@@ -20,7 +20,7 @@ public class MessageBus : IMessageBus, IDisposable
     public MessageBus(ILogger<MessageBus> logger, IConfiguration configuration)
     {
         _logger = logger;
-        
+
         // Konfiguracja Kafka Producer
         var kafkaConfig = new ProducerConfig
         {
@@ -46,7 +46,7 @@ public class MessageBus : IMessageBus, IDisposable
             .Build();
 
         _defaultTopic = configuration["Kafka:DefaultTopic"] ?? "crm-domain-events";
-        
+
         _logger.LogInformation(
             "Kafka MessageBus initialized. BootstrapServers: {BootstrapServers}, DefaultTopic: {DefaultTopic}",
             kafkaConfig.BootstrapServers,
@@ -60,7 +60,7 @@ public class MessageBus : IMessageBus, IDisposable
         {
             // Określ topic na podstawie typu eventu
             var topic = GetTopicForEvent(domainEvent);
-            
+
             // Serializuj Domain Event do JSON
             var eventJson = JsonSerializer.Serialize(domainEvent, new JsonSerializerOptions
             {
@@ -80,7 +80,7 @@ public class MessageBus : IMessageBus, IDisposable
             };
 
             var deliveryResult = await _producer.ProduceAsync(topic, message, cancellationToken);
-            
+
             _logger.LogInformation(
                 "Published domain event: {EventType} to topic {Topic} at partition {Partition} offset {Offset}",
                 domainEvent.GetType().Name,
@@ -113,7 +113,7 @@ public class MessageBus : IMessageBus, IDisposable
     public async Task PublishAsync(IEnumerable<IDomainEvent> domainEvents, CancellationToken cancellationToken = default)
     {
         var events = domainEvents.ToList();
-        
+
         _logger.LogInformation(
             "Publishing {Count} domain events to Kafka",
             events.Count
@@ -131,21 +131,21 @@ public class MessageBus : IMessageBus, IDisposable
     private string GetTopicForEvent(IDomainEvent domainEvent)
     {
         var eventType = domainEvent.GetType().Name;
-        
+
         // Routing na podstawie typu eventu
         // Przykład: CustomerCreatedEvent -> customers-events
         if (eventType.Contains("Customer"))
             return "customers-events";
-        
+
         if (eventType.Contains("Contact"))
             return "contacts-events";
-        
+
         if (eventType.Contains("Task"))
             return "tasks-events";
-        
+
         if (eventType.Contains("Note"))
             return "notes-events";
-        
+
         // Domyślny topic
         return _defaultTopic;
     }

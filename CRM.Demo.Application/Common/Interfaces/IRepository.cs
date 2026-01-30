@@ -14,27 +14,27 @@ public interface IRepository<TEntity, TId> where TEntity : Entity<TId>
     /// Pobiera encję po ID.
     /// </summary>
     Task<TEntity?> GetByIdAsync(TId id, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Pobiera wszystkie encje.
     /// </summary>
     Task<List<TEntity>> GetAllAsync(CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Dodaje nową encję.
     /// </summary>
     Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Aktualizuje istniejącą encję.
     /// </summary>
     Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Usuwa encję.
     /// </summary>
     Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Sprawdza czy encja istnieje.
     /// </summary>

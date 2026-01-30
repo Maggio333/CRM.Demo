@@ -9,7 +9,7 @@ public class TaskAssignedEvent : IDomainEvent
     public Guid NewUserId { get; }
     public DateTime AssignedAt { get; }
     public DateTime OccurredOn { get; }
-    
+
     public TaskAssignedEvent(
         Guid taskId,
         Guid? oldUserId,

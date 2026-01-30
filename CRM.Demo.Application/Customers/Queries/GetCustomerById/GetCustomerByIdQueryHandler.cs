@@ -14,7 +14,7 @@ public class GetCustomerByIdQueryHandler : IRequestHandler<GetCustomerByIdQuery,
 {
     private readonly ICustomerRepository _repository;
     private readonly IMapper _mapper;
-    
+
     public GetCustomerByIdQueryHandler(
         ICustomerRepository repository,
         IMapper mapper)
@@ -22,20 +22,20 @@ public class GetCustomerByIdQueryHandler : IRequestHandler<GetCustomerByIdQuery,
         _repository = repository;
         _mapper = mapper;
     }
-    
+
     public async Task<Result<CustomerDto, string>> Handle(
         GetCustomerByIdQuery request,
         CancellationToken cancellationToken)
     {
         var customer = await _repository.GetByIdAsync(request.CustomerId, cancellationToken);
-        
+
         if (customer == null)
         {
             return Result<CustomerDto, string>.Failure(
                 $"Customer with ID {request.CustomerId} not found"
             );
         }
-        
+
         var customerDto = _mapper.Map<CustomerDto>(customer);
         return Result<CustomerDto, string>.Success(customerDto);
     }

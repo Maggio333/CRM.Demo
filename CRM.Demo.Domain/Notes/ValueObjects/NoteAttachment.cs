@@ -10,7 +10,7 @@ public class NoteAttachment : ValueObject
     public long FileSize { get; }
     public string FilePath { get; }
     public DateTime UploadedAt { get; }
-    
+
     private NoteAttachment(
         Guid id,
         string fileName,
@@ -26,7 +26,7 @@ public class NoteAttachment : ValueObject
         FilePath = filePath;
         UploadedAt = uploadedAt;
     }
-    
+
     public static NoteAttachment Create(
         Guid id,
         string fileName,
@@ -36,13 +36,13 @@ public class NoteAttachment : ValueObject
     {
         if (string.IsNullOrWhiteSpace(fileName))
             throw new DomainException("File name cannot be empty");
-        
+
         if (fileSize <= 0)
             throw new DomainException("File size must be greater than 0");
-        
+
         if (fileSize > 10 * 1024 * 1024)  // 10 MB limit
             throw new DomainException("File size exceeds maximum limit (10 MB)");
-        
+
         return new NoteAttachment(
             id,
             fileName,
@@ -52,11 +52,11 @@ public class NoteAttachment : ValueObject
             DateTime.UtcNow
         );
     }
-    
+
     protected override IEnumerable<object> GetEqualityComponents()
     {
         yield return Id;
     }
-    
+
     public override string ToString() => FileName;
 }

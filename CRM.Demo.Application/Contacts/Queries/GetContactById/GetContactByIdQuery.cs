@@ -10,7 +10,7 @@ namespace CRM.Demo.Application.Contacts.Queries.GetContactById;
 public class GetContactByIdQuery : IRequest<Result<ContactDto, string>>
 {
     public Guid ContactId { get; set; }
-    
+
     public GetContactByIdQuery(Guid contactId)
     {
         ContactId = contactId;

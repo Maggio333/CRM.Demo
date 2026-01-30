@@ -14,7 +14,7 @@ public class GetNoteByIdQueryHandler : IRequestHandler<GetNoteByIdQuery, Result<
 {
     private readonly INoteRepository _repository;
     private readonly IMapper _mapper;
-    
+
     public GetNoteByIdQueryHandler(
         INoteRepository repository,
         IMapper mapper)
@@ -22,20 +22,20 @@ public class GetNoteByIdQueryHandler : IRequestHandler<GetNoteByIdQuery, Result<
         _repository = repository;
         _mapper = mapper;
     }
-    
+
     public async Task<Result<NoteDto, string>> Handle(
         GetNoteByIdQuery request,
         CancellationToken cancellationToken)
     {
         var note = await _repository.GetByIdAsync(request.NoteId, cancellationToken);
-        
+
         if (note == null)
         {
             return Result<NoteDto, string>.Failure(
                 $"Note with ID {request.NoteId} not found"
             );
         }
-        
+
         var noteDto = _mapper.Map<NoteDto>(note);
         return Result<NoteDto, string>.Success(noteDto);
     }

@@ -13,17 +13,17 @@ public interface INoteRepository : IRepository<Note, Guid>
     /// Wyszukuje wszystkie Notatki dla danego Customer.
     /// </summary>
     Task<List<Note>> GetByCustomerIdAsync(Guid customerId, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Wyszukuje wszystkie Notatki dla danego Contact.
     /// </summary>
     Task<List<Note>> GetByContactIdAsync(Guid contactId, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Wyszukuje wszystkie Notatki dla danego Task.
     /// </summary>
     Task<List<Note>> GetByTaskIdAsync(Guid taskId, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Wyszukuje wszystkie Notatki utworzone przez użytkownika.
     /// </summary>

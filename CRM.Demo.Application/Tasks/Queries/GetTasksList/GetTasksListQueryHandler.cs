@@ -14,7 +14,7 @@ public class GetTasksListQueryHandler : IRequestHandler<GetTasksListQuery, List<
 {
     private readonly ITaskRepository _repository;
     private readonly IMapper _mapper;
-    
+
     public GetTasksListQueryHandler(
         ITaskRepository repository,
         IMapper mapper)
@@ -22,13 +22,13 @@ public class GetTasksListQueryHandler : IRequestHandler<GetTasksListQuery, List<
         _repository = repository;
         _mapper = mapper;
     }
-    
+
     public async Task<List<TaskDto>> Handle(
         GetTasksListQuery request,
         CancellationToken cancellationToken)
     {
         List<Domain.Tasks.Entities.Task> tasks;
-        
+
         if (request.CustomerId.HasValue)
         {
             tasks = await _repository.GetByCustomerIdAsync(request.CustomerId.Value, cancellationToken);
@@ -45,19 +45,19 @@ public class GetTasksListQueryHandler : IRequestHandler<GetTasksListQuery, List<
         {
             tasks = await _repository.GetAllAsync(cancellationToken);
         }
-        
+
         // Filtrowanie po Status jeśli podano
         if (!string.IsNullOrEmpty(request.Status))
         {
             tasks = tasks.Where(t => t.Status.Value == request.Status).ToList();
         }
-        
+
         // Paginacja
         var paginatedTasks = tasks
             .Skip((request.PageNumber - 1) * request.PageSize)
             .Take(request.PageSize)
             .ToList();
-        
+
         return _mapper.Map<List<TaskDto>>(paginatedTasks);
     }
 }
