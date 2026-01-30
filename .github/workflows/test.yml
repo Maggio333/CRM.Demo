@@ -17,9 +17,11 @@ jobs:
     
     strategy:
       matrix:
-        test-project:
-          - CRM.Demo.Domain.Tests/CRM.Demo.Domain.Tests.csproj
-          - CRM.Demo.Application.Tests/CRM.Demo.Application.Tests.csproj
+        include:
+          - test-project: CRM.Demo.Domain.Tests/CRM.Demo.Domain.Tests.csproj
+            project-name: CRM.Demo.Domain.Tests
+          - test-project: CRM.Demo.Application.Tests/CRM.Demo.Application.Tests.csproj
+            project-name: CRM.Demo.Application.Tests
 
     steps:
       - name: Checkout code
@@ -43,7 +45,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: test-results-${{ matrix.test-project }}
+          name: test-results-${{ matrix.project-name }}
           path: '**/*.trx'
           retention-days: 30
 
@@ -51,7 +53,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: code-coverage-${{ matrix.test-project }}
+          name: code-coverage-${{ matrix.project-name }}
           path: '**/coverage.cobertura.xml'
           retention-days: 30
 
