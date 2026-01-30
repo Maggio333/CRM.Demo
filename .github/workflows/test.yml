@@ -78,5 +78,6 @@ jobs:
         with:
           files: 'test-results/**/*.trx'
           check_name: 'Unit Test Results'
+          check_run: false
           comment_mode: 'always'
           report_individual_runs: true
